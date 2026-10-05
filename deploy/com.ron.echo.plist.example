@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  launchd agent that keeps the echo collector running.
+
+  1. Replace every /ABSOLUTE/PATH/TO/crypto with the repo's real path
+     (NOT under ~/Desktop or ~/Documents: macOS TCC blocks launchd agents
+     from reading there and the job dies with exit code 78).
+  2. Point the first ProgramArguments entry at your python3 (`which python3`).
+  3. cp deploy/com.ron.echo.plist.example ~/Library/LaunchAgents/com.ron.echo.plist
+     launchctl load ~/Library/LaunchAgents/com.ron.echo.plist
+-->
+<plist version="1.0"><dict>
+  <key>Label</key><string>com.ron.echo</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/opt/homebrew/bin/python3</string>
+    <string>-u</string><string>-m</string><string>echo</string>
+  </array>
+  <key>WorkingDirectory</key><string>/ABSOLUTE/PATH/TO/crypto</string>
+  <key>StandardOutPath</key><string>/ABSOLUTE/PATH/TO/crypto/echo/logs/collector.log</string>
+  <key>StandardErrorPath</key><string>/ABSOLUTE/PATH/TO/crypto/echo/logs/collector.err</string>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+  <key>ThrottleInterval</key><integer>30</integer>
+</dict></plist>

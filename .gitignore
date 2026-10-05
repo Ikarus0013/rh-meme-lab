@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Collected data: the live SQLite store is ~200MB and grows continuously
+echo/echo.db
+echo/echo.db-*
+echo/logs/*
+!echo/logs/.gitkeep
+*.db
+*.db-wal
+*.db-shm
+
+# API response caches and spend log (regenerated on demand)
+cohort/cache/
+jev/cache/
+cohort/credits.jsonl
+
+# Saved FOMO leaderboard cohort: third-party trader handles and wallets
+cohort/cohort_rh.json
+
+# Scan output
+scan.json
+
+# Secrets (keys live in ~/.config/memescan, never in the repo)
+.env
+.env.*
+*_key
+*.pem
+
+# Local tooling / OS
+.claude/
+.DS_Store
