@@ -1,7 +1,7 @@
 # Commands
 
-Everything you need to type. The project now lives at **`~/crypto`**
-(`~/Desktop/Crypto` is a symlink to it, so either path works).
+Everything you need to type to operate the collector and dashboard. Assumes
+the repo is cloned to **`~/crypto`**.
 
 ```bash
 cd ~/crypto
@@ -11,29 +11,33 @@ Every command below assumes you have run that first.
 
 ---
 
-## 1. API key — DONE ✓
+## 1. API keys (optional)
 
-Installed at `~/.config/memescan/fomo_key`, verified against the live API.
-**Nothing to do.**
-
-To replace it later:
+Only the FOMO cohort and the Jev classifier need keys. The screener,
+collector, dashboard and exit planner run without any.
 
 ```bash
-bash setup.sh
+bash setup.sh          # or: bash setup.sh fomo | bash setup.sh jev
 ```
 
-It prompts without echoing, saves, then proves the key works by pulling three
-live leaderboard rows. `SETUP COMPLETE` means it worked.
-
-> The original one-liner *did* work — it just printed nothing on success,
-> which looks identical to failure. `setup.sh` always says what happened.
+It prompts without echoing, saves to `~/.config/memescan/` with mode 600, then
+proves each key works with a live call and prints the result either way.
 
 ---
 
-## 2. The collector — RUNS AUTOMATICALLY ✓
+## 2. The collector
 
-Installed as a launchd agent (`com.ron.echo`). It starts at login and
-restarts itself if it crashes. **You do not need to start it.**
+Run it in the foreground with `python3 -m echo`, or install it as a launchd
+agent (`com.ron.echo`) so it starts at login and restarts itself if it
+crashes:
+
+```bash
+# edit the paths inside the file first
+cp deploy/com.ron.echo.plist.example ~/Library/LaunchAgents/com.ron.echo.plist
+launchctl load ~/Library/LaunchAgents/com.ron.echo.plist
+```
+
+Once installed:
 
 ```bash
 # IS IT RUNNING?   (PID in col 1, exit status in col 2 — status 0 is healthy)
@@ -113,20 +117,19 @@ print("last cycle  ", "%.0fs ago" % (time.time() - q("select max(ts) from cycle_
 PY
 ```
 
-`bad` or `empty` above zero, or `last cycle` over ~300s, means gaps — tell Claude.
+`bad` or `empty` above zero, or `last cycle` over ~300s, means gaps in the dataset.
 
 ---
 
-## 6. Why the project moved out of Desktop
+## 6. Why the repo must not live in Desktop
 
 macOS TCC blocks launchd agents from **reading** files in `~/Desktop`
 (creating them works, which makes the failure confusing — it shows up only as
-launchd exit code 78). Your Terminal has the grant; background agents cannot
+launchd exit code 78). Terminal has the grant; background agents cannot
 get it and cannot prompt for it.
 
-Moving to `~/crypto` sidesteps it entirely — no System Settings trip, and
-nothing to re-fix when Homebrew upgrades Python. The Desktop symlink means
-old paths still work.
+Keeping the repo at `~/crypto` sidesteps it entirely — no System Settings
+trip, and nothing to re-fix when Homebrew upgrades Python.
 
 Sleep is separate from this: launchd restarts the collector on wake, but for
 a fully uninterrupted run either disable App Nap sleep on power adapter, or
@@ -136,7 +139,8 @@ run `caffeinate -s` in a spare terminal.
 
 ## 7. API credit budget
 
-Free tier: **250,000 credits/month ≈ 1,000 calls.** Used so far: 1.
+Free tier: **250,000 credits/month ≈ 1,000 calls.** Check spend with
+`python3 -c "from cohort import client; print(client.spend())"`.
 
 | call | credits |
 |---|---|
@@ -159,5 +163,3 @@ tail -30 echo/logs/collector.err     # crashes
 launchctl list | grep com.ron.echo   # col 2 is last exit status
 ls -la ~/.config/memescan/fomo_key   # should be -rw------- and non-empty
 ```
-
-Then tell Claude what it printed.

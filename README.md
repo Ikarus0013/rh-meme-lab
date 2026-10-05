@@ -40,6 +40,7 @@ screener, collector, dashboard and exit planner need none.
 - [What Robinhood Chain taught us](#what-robinhood-chain-taught-us)
 - [Design principles](#design-principles)
 - [Known limits](#known-limits)
+- [License](#license)
 - [Repository layout](#repository-layout)
 
 ---
@@ -532,12 +533,19 @@ Things that were measured rather than assumed, and that shaped the code:
 
 ---
 
+## License
+
+[MIT](LICENSE)
+
+---
+
 ## Repository layout
 
 ```
 .
 ├── README.md                 this file
 ├── COMMANDS.md               operator cheat sheet
+├── LICENSE                   MIT
 ├── setup.sh                  store and verify API keys
 ├── tests.py                  58 offline checks
 ├── dash.py                   local dashboard + exit planner UI

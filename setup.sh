@@ -107,4 +107,4 @@ case "${1:-all}" in
   all)  setup_fomo; setup_jev ;;
   *)    echo "usage: bash setup.sh [jev|fomo]"; exit 1 ;;
 esac
-echo; bold "Done — tell Claude \"done\""; echo
+echo; bold "Done"; echo
